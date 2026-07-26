@@ -1,606 +1,442 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joyce's ABC Adventure - 幼兒園雙週小報/圖卡產生器</title>
-    <style>
-        :root {
-            --primary: #ff6b6b;
-            --primary-hover: #ff5252;
-            --secondary: #4ecdc4;
-            --bg-color: #f7f9fc;
-            --card-bg: #ffffff;
-            --text-main: #2d3436;
-            --text-muted: #636e72;
-            --border-radius: 16px;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        header h1 {
-            font-size: 1.8rem;
-            color: var(--primary);
-            margin-bottom: 4px;
-        }
-
-        header p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        .main-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 24px;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-            flex: 1;
-        }
-
-        .control-panel {
-            flex: 1;
-            min-width: 320px;
-            background: var(--card-bg);
-            padding: 24px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .preview-panel {
-            flex: 1.2;
-            min-width: 350px;
-            background: var(--card-bg);
-            padding: 24px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 16px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--text-main);
-        }
-
-        input[type="text"], select, textarea {
-            padding: 10px 14px;
-            border: 2px solid #dfe6e9;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        input[type="text"]:focus, select:focus, textarea:focus {
-            border-color: var(--secondary);
-        }
-
-        textarea {
-            resize: vertical;
-            height: 80px;
-        }
-
-        /* Mode Switcher Toggle */
-        .mode-switch-wrapper {
-            background: #dfe6e9;
-            padding: 4px;
-            border-radius: 30px;
-            display: flex;
-            position: relative;
-        }
-
-        .mode-btn {
-            flex: 1;
-            text-align: center;
-            padding: 10px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            z-index: 2;
-            transition: color 0.3s;
-            border: none;
-            background: transparent;
-            color: var(--text-muted);
-        }
-
-        .mode-btn.active {
-            color: #ffffff;
-        }
-
-        .mode-slider {
-            position: absolute;
-            top: 4px;
-            bottom: 4px;
-            left: 4px;
-            width: calc(50% - 4px);
-            background: var(--primary);
-            border-radius: 26px;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1;
-        }
-
-        .mode-slider.right {
-            transform: translateX(100%);
-        }
-
-        /* Visual Canvas Preview Box */
-        .preview-box {
-            width: 100%;
-            max-width: 450px;
-            aspect-ratio: 4 / 5;
-            background: #fff;
-            border: 2px dashed #b2bec3;
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-        }
-
-        canvas {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .btn-download {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 30px;
-            cursor: pointer;
-            width: 100%;
-            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
-            transition: background 0.2s, transform 0.1s;
-        }
-
-        .btn-download:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .btn-download:active {
-            transform: scale(0.98);
-        }
-
-        .file-input-wrapper {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .file-input-wrapper input[type="file"] {
-            font-size: 0.85rem;
-        }
-
-        .tip {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: -4px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✨ Joyce's ABC Adventure - 每週學習花絮九宮格產生器</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+  body { background: #F7F6F3; color: #2d3436; padding: 20px; }
+  header { text-align: center; margin-bottom: 20px; }
+  header h1 { font-size: 1.6rem; color: #6B5B95; margin-bottom: 4px; }
+  header p { color: #888; font-size: 0.9rem; }
+  .main { display: flex; flex-wrap: wrap; gap: 24px; max-width: 1150px; margin: 0 auto; }
+  .panel { flex: 1; min-width: 320px; background: #fff; padding: 22px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 16px; }
+  .preview-panel { flex: 1.15; min-width: 340px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label { font-weight: 600; font-size: 0.85rem; color: #444; }
+  input[type=text], select, textarea { padding: 9px 12px; border: 1.5px solid #e0e0e0; border-radius: 8px; font-size: 0.9rem; }
+  textarea { resize: vertical; min-height: 60px; }
+  .mode-toggle { display: flex; border-radius: 10px; overflow: hidden; border: 1.5px solid #e0e0e0; }
+  .mode-toggle button { flex: 1; padding: 10px; border: none; background: #fafafa; cursor: pointer; font-size: 0.85rem; font-family: inherit; }
+  .mode-toggle button.active.public { background: #8A7FB0; color: #fff; font-weight: 600; }
+  .mode-toggle button.active.contact { background: #A47551; color: #fff; font-weight: 600; }
+  .word-row input { margin-bottom: 6px; }
+  .thumbs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .thumbs img { width: 44px; height: 44px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; }
+  .tip { font-size: 0.75rem; color: #999; }
+  .download-btn { padding: 13px; border: none; border-radius: 10px; color: #fff; font-weight: 600; font-size: 0.95rem; cursor: pointer; }
+  #previewBox { width: 100%; max-width: 420px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+  canvas { display: block; width: 100%; height: auto; }
+  .note { font-size: 0.75rem; color: #aaa; text-align: center; }
+  .emoji-cat-label { font-size: 0.75rem; color: #999; margin-top: 4px; }
+  .emoji-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .emoji-btn { font-size: 1.3rem; width: 42px; height: 42px; border-radius: 8px; border: 1.5px solid #e0e0e0; background: #fafafa; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .emoji-btn.selected { border-color: #8A7FB0; background: #EDE9F5; box-shadow: 0 0 0 2px #8A7FB0 inset; }
+  .emoji-selected-row { display: flex; gap: 6px; align-items: center; font-size: 0.8rem; color: #666; }
+  .emoji-selected-row span.slot { width: 32px; height: 32px; border: 1.5px dashed #ccc; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+</style>
 </head>
 <body>
 
-    <header>
-        <h1>✨ Joyce's ABC Adventure 雙週小報產生器</h1>
-        <p>跟著 David 一起展開快樂的英語冒險！</p>
-    </header>
+<header>
+  <h1>✨ 每週學習花絮九宮格產生器</h1>
+  <p>Joyce's ABC Adventure</p>
+</header>
 
-    <div class="main-container">
-        <!-- 控制面板 -->
-        <div class="control-panel">
-            <div class="form-group">
-                <label>發布模式切換</label>
-                <div class="mode-switch-wrapper">
-                    <div class="mode-slider" id="modeSlider"></div>
-                    <button type="button" class="mode-btn active" id="btnPublic" onclick="setMode('public')">🌐 公開分享模式 (IG)</button>
-                    <button type="button" class="mode-btn" id="privateBtn" onclick="setMode('private')">💌 聯絡簿附件模式</button>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="inputTheme">本週主題 (Theme)</label>
-                <input type="text" id="inputTheme" value="David's Jungle Safari 叢林大冒險" oninput="drawCanvas()">
-            </div>
-
-            <div class="form-group">
-                <label for="inputWord">核心字彙 / Target Word</label>
-                <input type="text" id="inputWord" value="Elephant / Monkey / Lion" oninput="drawCanvas()">
-            </div>
-
-            <div class="form-group">
-                <label for="inputSummary">一句話重點 / Story & Phonics</label>
-                <textarea id="inputSummary" oninput="drawCanvas()">跟著 David 用 Phonics 拼讀動物名稱，在唱跳遊戲中快樂開口說英語！</textarea>
-            </div>
-
-            <div class="form-group" id="groupClass">
-                <label for="inputClass">班級名稱 (聯絡簿模式專用)</label>
-                <input type="text" id="inputClass" value="Sun Class (向日葵班)" oninput="drawCanvas()">
-            </div>
-
-            <div class="form-group" id="groupVol">
-                <label for="inputVol">流水號 (公開模式專用)</label>
-                <input type="text" id="inputVol" value="Vol. 12" oninput="drawCanvas()">
-            </div>
-
-            <div class="form-group">
-                <label>視覺元素選擇</label>
-                <div style="display: flex; gap: 10px;">
-                    <select id="selectEmoji" style="flex: 1;" onchange="onEmojiChange()">
-                        <option value="🦁">🦁 獅子 (Lion)</option>
-                        <option value="🐵" selected>🐵 猴子 (Monkey)</option>
-                        <option value="🐘">🐘 大象 (Elephant)</option>
-                        <option value="🚀">🚀 冒險火箭 (Rocket)</option>
-                        <option value="⭐">⭐ 金星獎章 (Star)</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group" id="photoUploadGroup" style="display: none;">
-                <label for="inputPhoto">上傳活動照片 (聯絡簿模式)</label>
-                <div class="file-input-wrapper">
-                    <input type="file" id="inputPhoto" accept="image/*" onchange="handleImageUpload(event)">
-                </div>
-                <span class="tip">建議上傳橫向照片，呈現效果最佳。</span>
-            </div>
-        </div>
-
-        <!-- 預覽與輸出面板 -->
-        <div class="preview-panel">
-            <h3 style="font-size: 1.1rem; color: var(--text-main);">即時預覽畫面</h3>
-            <div class="preview-box" id="previewBox">
-                <canvas id="cardCanvas"></canvas>
-            </div>
-            <button class="btn-download" onclick="downloadImage()">📥 下載高畫質圖卡 (PNG)</button>
-        </div>
+<div class="main">
+  <div class="panel">
+    <div class="form-group">
+      <label>🔀 輸出模式</label>
+      <div class="mode-toggle">
+        <button id="btnPublic" class="active public" onclick="setMode('public')">📸 公開分享（霧薰衣草）</button>
+        <button id="btnContact" onclick="setMode('contact')">📩 聯絡簿附件（棕色調）</button>
+      </div>
     </div>
 
-    <script>
-        let currentMode = 'public'; // 'public' 或 'private'
-        let uploadedImage = null;
-        const canvas = document.getElementById('cardCanvas');
-        const ctx = canvas.getContext('2d');
+    <div class="form-group">
+      <label>🌱 班級</label>
+      <select id="classSelect" onchange="render()">
+        <option value="🌱 Pre-K">🌱 Pre-K</option>
+        <option value="🐣 K1">🐣 K1</option>
+        <option value="🦋 K2">🦋 K2</option>
+      </select>
+    </div>
 
-        // 初始化尺寸設定
-        function updateCanvasDimensions() {
-            if (currentMode === 'public') {
-                canvas.width = 1080;
-                canvas.height = 1350; // IG 4:5 比例
-            } else {
-                canvas.width = 1200;
-                canvas.height = 800;  // 聯絡簿橫幅 3:2 比例
-            }
-        }
+    <div class="form-group">
+      <label>📚 本週主題</label>
+      <input type="text" id="themeInput" value="Letter A a and B b" oninput="render()">
+    </div>
 
-        function setMode(mode) {
-            currentMode = mode;
-            const slider = document.getElementById('modeSlider');
-            const btnPublic = document.getElementById('btnPublic');
-            const btnPrivate = document.getElementById('privateBtn');
-            const groupClass = document.getElementById('groupClass');
-            const groupVol = document.getElementById('groupVol');
-            const photoGroup = document.getElementById('photoUploadGroup');
-            const previewBox = document.getElementById('previewBox');
+    <div class="form-group word-row">
+      <label>🎯 Target Words（最多 3 個）</label>
+      <input type="text" id="word1" value="apple" oninput="render()">
+      <input type="text" id="word2" value="ant" oninput="render()">
+      <input type="text" id="word3" value="bus" oninput="render()">
+    </div>
 
-            if (mode === 'public') {
-                slider.classList.remove('right');
-                btnPublic.classList.add('active');
-                btnPrivate.classList.remove('active');
-                groupClass.style.display = 'none';
-                groupVol.style.display = 'flex';
-                photoGroup.style.display = 'none';
-                previewBox.style.aspectRatio = '4 / 5';
-            } else {
-                slider.classList.add('right');
-                btnPrivate.classList.add('active');
-                btnPublic.classList.remove('active');
-                groupClass.style.display = 'flex';
-                groupVol.style.display = 'none';
-                photoGroup.style.display = 'flex';
-                previewBox.style.aspectRatio = '3 / 2';
-            }
+    <div class="form-group">
+      <label id="quoteLabel">💬 一句話重點</label>
+      <textarea id="quoteInput" oninput="render()">這週我們一起練習字母 A 和 B，唱唱跳跳認識新單字！</textarea>
+    </div>
 
-            updateCanvasDimensions();
-            drawCanvas();
-        }
+    <div class="form-group" id="publicEmojiGroup">
+      <label>😊 選擇 3 個 Emoji（公開模式強制使用，去識別化保護孩子）</label>
+      <div class="emoji-selected-row" id="emojiSelectedRow"></div>
+      <div id="emojiPicker"></div>
+    </div>
 
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        uploadedImage = img;
-                        drawCanvas();
-                    }
-                    img.src = e.target.result;
-                }
-                reader.readAsDataURL(file);
-            }
-        }
+    <div class="form-group" id="contactPhotoGroup" style="display:none">
+      <label>🖼️ 上傳照片（1-4 張，沒上傳的格子會用 Emoji 代替）</label>
+      <input type="file" id="photoInput" accept="image/*" multiple onchange="handlePhotos(event)">
+      <div class="thumbs" id="thumbs"></div>
+      <p class="tip">沒填滿的格子會自動用班級對應的 Emoji 佔位</p>
+    </div>
 
-        function drawRoundedRect(ctx, x, y, width, height, radius) {
-            ctx.beginPath();
-            ctx.moveTo(x + radius, y);
-            ctx.lineTo(x + width - radius, y);
-            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-            ctx.lineTo(x + width, y + height - radius);
-            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-            ctx.lineTo(x + radius, y + height);
-            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-            ctx.lineTo(x, y + radius);
-            ctx.quadraticCurveTo(x, y, x + radius, y);
-            ctx.closePath();
-        }
+    <button class="download-btn" id="downloadBtn" onclick="downloadImage()">⬇️ 下載圖卡 PNG</button>
+    <p class="note" id="volNote"></p>
+  </div>
 
-        function drawCanvas() {
-            const width = canvas.width;
-            const height = canvas.height;
+  <div class="preview-panel">
+    <div id="previewBox"><canvas id="cardCanvas"></canvas></div>
+  </div>
+</div>
 
-            // 清空畫布
-            ctx.clearRect(0, 0, width, height);
+<script>
+const THEMES = {
+  public: {
+    outerBorder: '#ABAFCB',
+    bgFrom: '#F3F2F8', bgTo: '#E9E9F3',
+    cellBg: '#FFFFFF',
+    accentCellBg: '#E3E2F0',
+    accentText: '#4B4A73',
+    mutedText: '#7B7A9C',
+    titleText: '#5C5A8A'
+  },
+  contact: {
+    outerBorder: '#B08968',
+    bgFrom: '#FAF5EE', bgTo: '#F1E5D5',
+    cellBg: '#FFFFFF',
+    accentCellBg: '#EAD9C4',
+    accentText: '#6B4A32',
+    mutedText: '#96795E',
+    titleText: '#7A5738'
+  }
+};
 
-            // 1. 繪製背景
-            const bgGrad = ctx.createLinearGradient(0, 0, width, height);
-            if (currentMode === 'public') {
-                bgGrad.addColorStop(0, '#fff5f5');
-                bgGrad.addColorStop(1, '#ffe3e3');
-            } else {
-                bgGrad.addColorStop(0, '#e8f8f5');
-                bgGrad.addColorStop(1, '#d1f2eb');
-            }
-            ctx.fillStyle = bgGrad;
-            ctx.fillRect(0, 0, width, height);
+const EMOJI_CATEGORIES = [
+  { label: '🍎 水果食物', items: ['🍎','🍌','🍊','🍇','🍓','🍉','🍒','🍑','🍍','🥝','🍋','🥕','🍞','🥚','🧀','🍪','🍦','🥛'] },
+  { label: '🐾 動物', items: ['🐜','🐦','🐘','🦁','🐵','🐰','🐱','🐶','🐟','🦋','🐸','🐷','🐮','🐴','🦒','🐢','🐝','🐌','🦆','🐔'] },
+  { label: '🚌 交通工具', items: ['🚌','🚗','🚲','✈️','🚀','⛵','🚂','🚕','🚑','🚓','🛵','🚁'] },
+  { label: '☀️ 天氣與自然', items: ['☀️','🌧️','🌈','⭐','🌙','☁️','🌸','🌳','🌊','❄️','⛄','🌻','🍁','🌵'] },
+  { label: '🔤 字母與學習', items: ['🔤','📚','✏️','🎨','🎵','🧩','📏','🖍️','📖','🔢','✂️','📝'] },
+  { label: '🏆 獎勵鼓勵', items: ['⭐','🏆','💯','👏','🎉','❤️','🌟','💪','👍','🥇','🎈','✨'] },
+  { label: '😊 情緒表情', items: ['😊','😄','😢','😴','😲','🥳','😎','🤔','😋','🙂'] },
+  { label: '🎃 節慶主題', items: ['🎄','🎃','🐰','🧧','🎂','🎁','🥮','🏮','🎆','🍭'] }
+];
 
-            // 裝飾外框
-            ctx.strokeStyle = currentMode === 'public' ? '#ff6b6b' : '#4ecdc4';
-            ctx.lineWidth = 16;
-            ctx.strokeRect(20, 20, width - 40, height - 40);
+let state = { mode: 'public', photos: [], selectedEmojis: ['🍎', '🐜', '🚌'] };
 
-            // 2. 頂部標頭 (Header)
-            ctx.fillStyle = '#2d3436';
-            ctx.font = 'bold 36px "PingFang TC", "Microsoft JhengHei", sans-serif';
-            ctx.fillText("✨ Joyce's ABC Adventure", 60, 90);
+const canvas = document.getElementById('cardCanvas');
+const ctx = canvas.getContext('2d');
 
-            // 右上角標籤 (Vol. 或 班級)
-            ctx.textAlign = 'right';
-            ctx.fillStyle = currentMode === 'public' ? '#ff6b6b' : '#16a085';
-            ctx.font = 'bold 32px "PingFang TC", "Microsoft JhengHei", sans-serif';
-            const topBadgeText = currentMode === 'public' ? document.getElementById('inputVol').value : document.getElementById('inputClass').value;
-            ctx.fillText(topBadgeText, width - 60, 90);
-            ctx.textAlign = 'left'; // 恢復預設
+function buildEmojiPicker() {
+  const picker = document.getElementById('emojiPicker');
+  picker.innerHTML = '';
+  EMOJI_CATEGORIES.forEach(cat => {
+    const label = document.createElement('div');
+    label.className = 'emoji-cat-label';
+    label.textContent = cat.label;
+    picker.appendChild(label);
+    const grid = document.createElement('div');
+    grid.className = 'emoji-grid';
+    cat.items.forEach(em => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'emoji-btn';
+      btn.textContent = em;
+      btn.onclick = () => toggleEmoji(em);
+      grid.appendChild(btn);
+    });
+    picker.appendChild(grid);
+  });
+  refreshEmojiPickerState();
+}
 
-            // 分隔線
-            ctx.strokeStyle = '#dfe6e9';
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.moveTo(60, 120);
-            ctx.lineTo(width - 60, 120);
-            ctx.stroke();
+function toggleEmoji(em) {
+  const idx = state.selectedEmojis.indexOf(em);
+  if (idx > -1) {
+    state.selectedEmojis.splice(idx, 1);
+  } else {
+    if (state.selectedEmojis.length >= 3) state.selectedEmojis.shift();
+    state.selectedEmojis.push(em);
+  }
+  refreshEmojiPickerState();
+  render();
+}
 
-            // 3. 根據模式排版配置
-            if (currentMode === 'public') {
-                // --- 公開分享模式排版 (IG 直式 1080x1350) ---
-                // 主題大標題
-                ctx.fillStyle = '#ff6b6b';
-                ctx.font = 'bold 64px "PingFang TC", "Microsoft JhengHei", sans-serif';
-                wrapText(ctx, document.getElementById('inputTheme').value, 60, 220, width - 120, 75);
+function refreshEmojiPickerState() {
+  document.querySelectorAll('.emoji-btn').forEach(btn => {
+    btn.classList.toggle('selected', state.selectedEmojis.includes(btn.textContent));
+  });
+  const row = document.getElementById('emojiSelectedRow');
+  row.innerHTML = '已選：';
+  for (let i = 0; i < 3; i++) {
+    const span = document.createElement('span');
+    span.className = 'slot';
+    span.textContent = state.selectedEmojis[i] || '';
+    row.appendChild(span);
+  }
+}
 
-                // 中央圓形視覺框 (Emoji 模式)
-                ctx.save();
-                ctx.beginPath();
-                ctx.arc(width / 2, 530, 160, 0, Math.PI * 2);
-                ctx.fillStyle = '#ffffff';
-                ctx.shadowColor = 'rgba(0,0,0,0.1)';
-                ctx.shadowBlur = 20;
-                ctx.shadowOffsetY = 10;
-                ctx.fill();
-                ctx.restore();
+function getVol() { return parseInt(localStorage.getItem('joyceVol') || '0', 10); }
+function bumpVol() { const n = getVol() + 1; localStorage.setItem('joyceVol', String(n)); return n; }
 
-                // 繪製 Emoji
-                const emoji = document.getElementById('selectEmoji').value;
-                ctx.font = '140px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(emoji, width / 2, 530);
-                ctx.textBaseline = 'alphabetic'; // 恢復
+function setMode(mode) {
+  state.mode = mode;
+  document.getElementById('btnPublic').classList.toggle('active', mode === 'public');
+  document.getElementById('btnContact').classList.toggle('active', mode === 'contact');
+  document.getElementById('publicEmojiGroup').style.display = mode === 'public' ? 'flex' : 'none';
+  document.getElementById('contactPhotoGroup').style.display = mode === 'contact' ? 'flex' : 'none';
+  document.getElementById('quoteLabel').textContent = mode === 'public' ? '💬 一句話重點（公開語氣）' : '📩 今日花絮 / 給家長的話';
+  const btn = document.getElementById('downloadBtn');
+  btn.style.background = mode === 'public' ? '#8A7FB0' : '#A47551';
+  render();
+}
 
-                // 核心字彙區塊
-                drawCardBox(ctx, 60, 740, width - 120, 130, '#ffffff', '#ff6b6b');
-                ctx.fillStyle = '#2d3436';
-                ctx.font = 'bold 30px "PingFang TC", "Microsoft JhengHei", sans-serif';
-                ctx.fillText("🎯 Target Words:", 100, 790);
-                ctx.font = 'bold 36px "PingFang TC", "Microsoft JhengHei", sans-serif';
-                ctx.fillStyle = '#ff6b6b';
-                ctx.fillText(document.getElementById('inputWord').value, 100, 835);
+function handlePhotos(e) {
+  const files = Array.from(e.target.files).slice(0, 4);
+  state.photos = [];
+  const thumbs = document.getElementById('thumbs');
+  thumbs.innerHTML = '';
+  let loaded = 0;
+  if (files.length === 0) { render(); return; }
+  files.forEach((file, idx) => {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => { state.photos[idx] = img; loaded++; if (loaded === files.length) render(); };
+      img.src = ev.target.result;
+      const t = document.createElement('img');
+      t.src = ev.target.result;
+      thumbs.appendChild(t);
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
-                // 一句話重點 / 老師的話
-                drawCardBox(ctx, 60, 900, width - 120, 180, '#ffffff', '#ff6b6b');
-                ctx.fillStyle = '#2d3436';
-                ctx.font = 'bold 28px "PingFang TC", "Microsoft JhengHei", sans-serif';
-                ctx.fillText("💡 重點精華 / David's Adventure:", 100, 955);
-                ctx.font = '28px "PingFang TC", "Microsoft JhengHei", sans-serif';
-                ctx.fillStyle = '#636e72';
-                wrapText(ctx, document.getElementById('inputSummary').value, 100, 1005, width - 200, 40);
+function wrapText(context, text, maxWidth) {
+  if (!text) return [];
+  const chars = String(text).split('');
+  const lines = [];
+  let line = '';
+  for (let i = 0; i < chars.length; i++) {
+    const test = line + chars[i];
+    if (context.measureText(test).width > maxWidth && line.length > 0) {
+      lines.push(line);
+      line = chars[i];
+    } else {
+      line = test;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
 
-                // 底部版權
-                ctx.fillStyle = '#b2bec3';
-                ctx.font = '24px "PingFang TC", "Microsoft JhengHei", sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText("© Joyce's Early Childhood English Teaching", width / 2, 1280);
-                ctx.textAlign = 'left';
+function fitText(context, text, maxWidth, maxLines, startSize, minSize, weight) {
+  let size = startSize, lines;
+  while (size >= minSize) {
+    context.font = `${weight} ${size}px sans-serif`;
+    lines = wrapText(context, text, maxWidth);
+    if (lines.length <= maxLines) break;
+    size -= 2;
+  }
+  if (lines.length > maxLines) {
+    lines = lines.slice(0, maxLines);
+    let last = lines[maxLines - 1];
+    while (context.measureText(last + '…').width > maxWidth && last.length > 0) last = last.slice(0, -1);
+    lines[maxLines - 1] = last + '…';
+  }
+  return { lines, size };
+}
 
-            } else {
-                // --- 聯絡簿附件模式排版 (橫幅 1200x800) ---
-                // 左側文字區塊
-                ctx.fillStyle = '#16a085';
-                ctx.font = 'bold 44px "PingFang TC", "Microsoft JhengHei", sans-serif';
-                wrapText(ctx, document.getElementById('inputTheme').value, 60, 190, 560, 55);
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
 
-                ctx.fillStyle = '#2d3436';
-                ctx.font = 'bold 26px "PingFang TC", "Microsoft JhengHei", sans-serif';
-                ctx.fillText("🎯 Target Words: " + document.getElementById('inputWord').value, 60, 310);
+function drawTextCell(x, y, w, h, label, value, theme, accent) {
+  roundRect(x, y, w, h, 10);
+  ctx.fillStyle = accent ? theme.accentCellBg : theme.cellBg;
+  ctx.fill();
+  const padX = w * 0.1, padY = h * 0.12;
+  if (label) {
+    ctx.font = `500 ${Math.max(w * 0.09, 13)}px sans-serif`;
+    ctx.fillStyle = theme.mutedText;
+    ctx.textAlign = 'left';
+    ctx.fillText(label, x + padX, y + padY + w * 0.09);
+  }
+  const valFit = fitText(ctx, value, w - padX * 2, 3, w * 0.16, 12, '600');
+  ctx.fillStyle = theme.accentText;
+  ctx.textAlign = 'center';
+  let vy = y + h / 2 + (label ? h * 0.08 : 0) - (valFit.lines.length - 1) * valFit.size * 0.6;
+  valFit.lines.forEach(line => {
+    ctx.font = `600 ${valFit.size}px sans-serif`;
+    ctx.fillText(line, x + w / 2, vy);
+    vy += valFit.size * 1.2;
+  });
+  ctx.textAlign = 'left';
+}
 
-                // 溫馨重點
-                drawCardBox(ctx, 60, 350, 560, 310, '#ffffff', '#1abc9c');
-                ctx.fillStyle = '#16a085';
-                ctx.font = 'bold 26px "PingFang TC", "Microsoft JhengHei", sans-serif';
-                ctx.fillText("💌 老師給把關的家長的話：", 90, 400);
-                ctx.fillStyle = '#2d3436';
-                ctx.font = '24px "PingFang TC", "Microsoft JhengHei", sans-serif';
-                wrapText(ctx, document.getElementById('inputSummary').value, 90, 450, 500, 36);
+function drawMediaCell(x, y, w, h, mediaItem, theme) {
+  roundRect(x, y, w, h, 10);
+  ctx.save();
+  ctx.clip();
+  ctx.fillStyle = theme.accentCellBg;
+  ctx.fillRect(x, y, w, h);
+  if (mediaItem && mediaItem.type === 'photo') {
+    const img = mediaItem.img;
+    const ir = img.width / img.height, cr = w / h;
+    let dw, dh, dx, dy;
+    if (ir > cr) { dh = h; dw = h * ir; dx = x - (dw - w) / 2; dy = y; }
+    else { dw = w; dh = w / ir; dx = x; dy = y - (dh - h) / 2; }
+    ctx.drawImage(img, dx, dy, dw, dh);
+  } else {
+    const emoji = mediaItem ? mediaItem.emoji : '✨';
+    ctx.font = `${Math.min(w, h) * 0.5}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(emoji, x + w / 2, y + h / 2 + 4);
+    ctx.textBaseline = 'alphabetic';
+    ctx.textAlign = 'left';
+  }
+  ctx.restore();
+}
 
-                // 右側照片或插畫區塊
-                const photoBoxX = 660;
-                const photoBoxY = 160;
-                const photoBoxW = 480;
-                const photoBoxH = 500;
+function render() {
+  const isPublic = state.mode === 'public';
+  const W = 1080, H = 1350;
+  canvas.width = W;
+  canvas.height = H;
+  const theme = THEMES[isPublic ? 'public' : 'contact'];
 
-                ctx.save();
-                ctx.shadowColor = 'rgba(0,0,0,0.15)';
-                ctx.shadowBlur = 15;
-                ctx.shadowOffsetX = 4;
-                ctx.shadowOffsetY = 4;
-                drawRoundedRect(ctx, photoBoxX, photoBoxY, photoBoxW, photoBoxH, 16);
-                ctx.fillStyle = '#ffffff';
-                ctx.fill();
-                ctx.restore();
+  ctx.fillStyle = theme.outerBorder;
+  ctx.fillRect(0, 0, W, H);
+  const ip = W * 0.02;
+  roundRect(ip, ip, W - ip * 2, H - ip * 2, 16);
+  const grad = ctx.createLinearGradient(0, 0, W, H);
+  grad.addColorStop(0, theme.bgFrom);
+  grad.addColorStop(1, theme.bgTo);
+  ctx.fillStyle = grad;
+  ctx.fill();
 
-                if (uploadedImage) {
-                    ctx.save();
-                    drawRoundedRect(ctx, photoBoxX, photoBoxY, photoBoxW, photoBoxH, 16);
-                    ctx.clip();
-                    // 圖片保持比例居中裁切
-                    drawImageCover(ctx, uploadedImage, photoBoxX, photoBoxY, photoBoxW, photoBoxH);
-                    ctx.restore();
-                } else {
-                    // 若無上傳照片則預設顯示 Emoji 插畫
-                    ctx.font = '120px sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(document.getElementById('selectEmoji').value, photoBoxX + photoBoxW / 2, photoBoxY + photoBoxH / 2 - 30);
-                    ctx.font = 'bold 22px "PingFang TC", sans-serif';
-                    ctx.fillStyle = '#b2bec3';
-                    ctx.fillText("（點選左側上傳實際照片）", photoBoxX + photoBoxW / 2, photoBoxY + photoBoxH / 2 + 60);
-                    ctx.textBaseline = 'alphabetic';
-                    ctx.textAlign = 'left';
-                }
+  const pad = W * 0.055;
+  let cy = pad + 20;
 
-                // 底部標語
-                ctx.fillStyle = '#7f8c8d';
-                ctx.font = '20px "PingFang TC", sans-serif';
-                ctx.fillText("David's ABC Adventure - 讓學習像冒險一樣好玩！", 60, 735);
-            }
-        }
+  ctx.font = '600 32px sans-serif';
+  ctx.fillStyle = '#333';
+  ctx.textAlign = 'left';
+  ctx.fillText("✨ Joyce's ABC Adventure", pad, cy);
 
-        // 輔助函式：文字自動換行
-        function wrapText(context, text, x, y, maxWidth, lineHeight) {
-            const words = text.split('');
-            let line = '';
-            for (let n = 0; n < words.length; n++) {
-                const testLine = line + words[n];
-                const metrics = context.measureText(testLine);
-                const testWidth = metrics.width;
-                if (testWidth > maxWidth && n > 0) {
-                    context.fillText(line, x, y);
-                    line = words[n];
-                    y += lineHeight;
-                } else {
-                    line = testLine;
-                }
-            }
-            context.fillText(line, x, y);
-        }
+  ctx.textAlign = 'right';
+  ctx.font = '600 26px sans-serif';
+  ctx.fillStyle = theme.accentText;
+  const cls = document.getElementById('classSelect').value;
+  ctx.fillText(isPublic ? `Vol. ${getVol() + 1}` : cls, W - pad, cy);
+  ctx.textAlign = 'left';
 
-        // 輔助函式：繪製圓角卡片背景
-        function drawCardBox(ctx, x, y, w, h, bgColor, borderColor) {
-            ctx.save();
-            ctx.beginPath();
-            drawRoundedRect(ctx, x, y, w, h, 12);
-            ctx.fillStyle = bgColor;
-            ctx.shadowColor = 'rgba(0,0,0,0.05)';
-            ctx.shadowBlur = 10;
-            ctx.fill();
-            ctx.strokeStyle = borderColor;
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            ctx.restore();
-        }
+  cy += 34;
+  ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(pad, cy);
+  ctx.lineTo(W - pad, cy);
+  ctx.stroke();
 
-        // 圖片保持比例填滿並裁切
-        function drawImageCover(ctx, img, x, y, w, h) {
-            const imgRatio = img.width / img.height;
-            const targetRatio = w / h;
-            let renderW, renderH, offsetX, offsetY;
+  const gridTop = cy + 30;
+  const gridSize = W - pad * 2;
+  const gap = 10;
+  const cell = (gridSize - gap * 2) / 3;
 
-            if (imgRatio > targetRatio) {
-                renderH = h;
-                renderW = img.width * (h / img.height);
-                offsetX = x - (renderW - w) / 2;
-                offsetY = y;
-            } else {
-                renderW = w;
-                renderH = img.height * (w / img.width);
-                offsetX = x;
-                offsetY = y - (renderH - h) / 2;
-            }
-            ctx.drawImage(img, offsetX, offsetY, renderW, renderH);
-        }
+  const themeText = document.getElementById('themeInput').value || '本週學習花絮';
+  const words = [
+    document.getElementById('word1').value,
+    document.getElementById('word2').value,
+    document.getElementById('word3').value
+  ].filter(w => w.trim());
+  const quoteText = document.getElementById('quoteInput').value || '這週我們一起快樂學英語！';
+  const dateStr = new Date().toLocaleDateString('zh-TW');
 
-        // 下載圖片功能
-        function downloadImage() {
-            drawCanvas(); // 確保畫布最新
-            const link = document.createElement('a');
-            link.download = `Joyce_ABC_Adventure_${currentMode}_${Date.now()}.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        }
+  let mediaItems;
+  if (isPublic) {
+    const emojis = state.selectedEmojis;
+    mediaItems = [0, 1, 2].map(i => ({ type: 'emoji', emoji: emojis[i] || '✨' }));
+  } else {
+    const fallbackEmoji = cls.split(' ')[0];
+    mediaItems = [0, 1, 2, 3].map(i => state.photos[i]
+      ? { type: 'photo', img: state.photos[i] }
+      : { type: 'emoji', emoji: fallbackEmoji });
+  }
 
-        // 頁面載入時初始化繪製
-        window.onload = function() {
-            updateCanvasDimensions();
-            drawCanvas();
-        };
-    </script>
+  const cells = [
+    { kind: 'title', value: themeText },
+    { kind: 'media', media: mediaItems[0] },
+    { kind: 'text', label: '🎯', value: words[0] || 'word' },
+    { kind: 'media', media: mediaItems[1] },
+    { kind: 'media', media: mediaItems[2] },
+    { kind: 'media', media: isPublic ? { type: 'emoji', emoji: '⭐' } : mediaItems[3] },
+    { kind: 'text', label: '', value: quoteText, quote: true },
+    { kind: 'text', label: '', value: words[1] || words[0] || '', small: true },
+    { kind: 'text', label: '', value: dateStr, small: true }
+  ];
+
+  cells.forEach((c, i) => {
+    const col = i % 3, row = Math.floor(i / 3);
+    const x = pad + col * (cell + gap);
+    const y = gridTop + row * (cell + gap);
+    if (c.kind === 'media') {
+      drawMediaCell(x, y, cell, cell, c.media, theme);
+    } else if (c.kind === 'title') {
+      drawTextCell(x, y, cell, cell, '📚', c.value, theme, true);
+    } else if (c.kind === 'quote') {
+      drawTextCell(x, y, cell, cell, '💬', c.value, theme, true);
+    } else {
+      drawTextCell(x, y, cell, cell, c.label, c.value, theme, c.quote);
+    }
+  });
+
+  const footerY = gridTop + 3 * cell + 2 * gap + 40;
+  ctx.font = '13px sans-serif';
+  ctx.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.textAlign = 'center';
+  ctx.fillText("Joyce's Early Childhood English Teaching", W / 2, footerY);
+  ctx.textAlign = 'left';
+}
+
+document.getElementById('downloadBtn').onclick = () => {
+  if (state.mode === 'public') bumpVol();
+  render();
+  const link = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0, 10);
+  link.download = `joyce-weekly-${state.mode}-${stamp}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  updateVolNote();
+};
+
+function updateVolNote() {
+  document.getElementById('volNote').textContent = `目前累積 Vol. ${getVol()}（儲存在此瀏覽器）`;
+}
+
+buildEmojiPicker();
+updateVolNote();
+render();
+</script>
+
 </body>
 </html>
