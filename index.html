@@ -77,6 +77,9 @@
 
     <div class="form-group">
       <label id="quoteLabel">💬 一句話重點</label>
+      <select id="quoteTemplateSelect" onchange="applyTemplate()">
+        <option value="">— 選擇套用範本（可選）—</option>
+      </select>
       <textarea id="quoteInput" oninput="render()">這週我們一起練習字母 A 和 B，唱唱跳跳認識新單字！</textarea>
     </div>
 
@@ -134,6 +137,42 @@ const EMOJI_CATEGORIES = [
   { label: '😊 情緒表情', items: ['😊','😄','😢','😴','😲','🥳','😎','🤔','😋','🙂'] },
   { label: '🎃 節慶主題', items: ['🎄','🎃','🐰','🧧','🎂','🎁','🥮','🏮','🎆','🍭'] }
 ];
+
+const QUOTE_TEMPLATES = {
+  public: [
+    '這週我們一起練習 ___，唱唱跳跳認識新單字！',
+    '跟著 [主題角色] 一起 [動作]，在遊戲中快樂開口說英語！',
+    '本週用 [教學方法] 學會 ___，小朋友超有成就感！',
+    '[Target word 英文例句]。（中文翻譯）'
+  ],
+  contact: [
+    '今天孩子們學習了 ___，課堂上特別喜歡 [活動/遊戲名稱] 這個環節！',
+    '本週重點單字是 ___，建議回家可以請孩子練習說一次喔！',
+    '孩子今天在 ___ 活動中表現很棒，主動開口說了英文！',
+    '這週透過 [繪本/歌曲/遊戲名稱]，複習了 ___ 這幾個單字。'
+  ]
+};
+
+function buildQuoteTemplateOptions() {
+  const sel = document.getElementById('quoteTemplateSelect');
+  const list = QUOTE_TEMPLATES[state.mode];
+  sel.innerHTML = '<option value="">— 選擇套用範本（可選）—</option>';
+  list.forEach((tpl, i) => {
+    const opt = document.createElement('option');
+    opt.value = String(i);
+    opt.textContent = tpl.length > 22 ? tpl.slice(0, 22) + '…' : tpl;
+    sel.appendChild(opt);
+  });
+}
+
+function applyTemplate() {
+  const sel = document.getElementById('quoteTemplateSelect');
+  const idx = sel.value;
+  if (idx === '') return;
+  const tpl = QUOTE_TEMPLATES[state.mode][parseInt(idx, 10)];
+  document.getElementById('quoteInput').value = tpl;
+  render();
+}
 
 let state = { mode: 'public', photos: [], selectedEmojis: ['🍎', '🐜', '🚌'] };
 
@@ -199,6 +238,7 @@ function setMode(mode) {
   document.getElementById('publicEmojiGroup').style.display = mode === 'public' ? 'flex' : 'none';
   document.getElementById('contactPhotoGroup').style.display = mode === 'contact' ? 'flex' : 'none';
   document.getElementById('quoteLabel').textContent = mode === 'public' ? '💬 一句話重點（公開語氣）' : '📩 今日花絮 / 給家長的話';
+  buildQuoteTemplateOptions();
   const btn = document.getElementById('downloadBtn');
   btn.style.background = mode === 'public' ? '#8A7FB0' : '#A47551';
   render();
@@ -434,6 +474,7 @@ function updateVolNote() {
 }
 
 buildEmojiPicker();
+buildQuoteTemplateOptions();
 updateVolNote();
 render();
 </script>
